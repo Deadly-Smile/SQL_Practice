@@ -73,7 +73,7 @@ export async function createPracticeDB() {
             };
           }
 
-          const raw = results[0];
+          const raw = results[0] as any;
 
           // Normalize result shape (handles `columns` OR `lc`)
           const columns: string[] = raw.columns ?? raw.lc ?? [];
