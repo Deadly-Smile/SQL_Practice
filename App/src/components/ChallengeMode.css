@@ -1,0 +1,271 @@
+.challenge-mode {
+  margin: 0 auto;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.challenge-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.challenge-header h1 {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.challenge-header p {
+  margin: 0;
+  color: #666;
+  font-size: 16px;
+}
+
+.challenge-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 30px;
+}
+
+/* Challenge List */
+.challenge-list {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  height: fit-content;
+}
+
+.challenge-list h3 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.challenge-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #333;
+  padding: 12px;
+  margin-bottom: 10px;
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.challenge-item:hover {
+  border-color: #007bff;
+  transform: translateX(4px);
+}
+
+.challenge-item.active {
+  background: #007bff;
+  border-color: #007bff;
+  color: white;
+}
+
+.challenge-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #e0e0e0;
+  border-radius: 50%;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.challenge-item.active .challenge-number {
+  background: white;
+  color: #007bff;
+}
+
+.challenge-title {
+  flex: 1;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+/* Challenge Content */
+.challenge-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.challenge-details {
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.challenge-details h2 {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.challenge-description {
+  margin: 0 0 15px 0;
+  color: #555;
+  line-height: 1.6;
+}
+
+.challenge-hint {
+  padding: 12px;
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 6px;
+  color: #856404;
+  font-size: 14px;
+}
+
+/* Query Editor */
+.query-editor {
+  display: flex;
+  flex-direction: column;
+}
+
+.query-editor label {
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333;
+}
+
+.query-input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+
+.query-input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+/* Challenge Actions */
+.challenge-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-validate {
+  padding: 14px 28px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-validate:hover:not(:disabled) {
+  background: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-validate:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+/* Validation Result */
+.validation-result {
+  border-radius: 8px;
+  overflow: hidden;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.validation-result.passed {
+  border: 2px solid #28a745;
+}
+
+.validation-result.failed {
+  border: 2px solid #dc3545;
+}
+
+.validation-header {
+  padding: 16px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.validation-result.passed .validation-header {
+  background: #d4edda;
+  color: #155724;
+}
+
+.validation-result.failed .validation-header {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.validation-message {
+  padding: 16px;
+  color: #333;
+  background: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+}
+
+/* Result Comparison */
+.result-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 16px;
+  background: white;
+}
+
+.result-column h4 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 14px;
+}
+
+.result-column pre {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 12px;
+  font-size: 12px;
+  overflow-x: auto;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .challenge-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .challenge-list {
+    order: 2;
+  }
+
+  .result-comparison {
+    grid-template-columns: 1fr;
+  }
+}
