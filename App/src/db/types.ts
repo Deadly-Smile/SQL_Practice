@@ -13,6 +13,6 @@ export interface DatabaseInstance {
   db: Database;
   mode: DatabaseMode;
   execute: (query: string) => QueryResult;
-  reset: () => void;
+  reset: () => Promise<void>;
   dispose: () => void;
 }

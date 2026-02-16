@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useDatabase } from '../hooks/useDatabase';
-import type { DatabaseMode } from '../db';
+// import type { DatabaseMode } from '../db';
 import './SQLEditor.css';
 
 export function SQLEditor() {
-  const { mode, isLoading, error, executeQuery, changeMode, resetDatabase } = useDatabase('practice');
+  const { mode, isLoading, error, executeQuery, resetDatabase } = useDatabase('practice');
   const [query, setQuery] = useState('SELECT * FROM users;');
   const [result, setResult] = useState<any>(null);
 
@@ -14,12 +14,12 @@ export function SQLEditor() {
     setResult(queryResult);
   };
 
-  const handleModeChange = (newMode: DatabaseMode) => {
-    if (window.confirm(`Switch to ${newMode} mode? This will create a new database instance.`)) {
-      changeMode(newMode);
-      setResult(null);
-    }
-  };
+  // const handleModeChange = (newMode: DatabaseMode) => {
+  //   if (window.confirm(`Switch to ${newMode} mode? This will create a new database instance.`)) {
+  //     changeMode(newMode);
+  //     setResult(null);
+  //   }
+  // };
 
   const handleReset = async () => {
     if (window.confirm('Reset database to default schema? This will delete all your changes.')) {

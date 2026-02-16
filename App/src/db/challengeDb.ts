@@ -1,7 +1,7 @@
 import { createDatabase } from './sql';
 import { schemaSQL } from './schema';
 import { seedSQL } from './seed';
-import type { QueryResult } from './types';
+import type { QueryResult, DatabaseInstance } from './types';
 
 const FORBIDDEN_KEYWORDS = [
   'drop',
@@ -31,30 +31,22 @@ function isQueryAllowed(query: string): { allowed: boolean; keyword?: string } {
   return { allowed: true };
 }
 
-type ExecResultShape = {
-  columns: string[];
-  values: unknown[][];
-};
-
-// function isExecResult(obj: unknown): obj is ExecResultShape {
-//   return (
-//     typeof obj === 'object' &&
-//     obj !== null &&
-//     Array.isArray((obj as { columns?: unknown }).columns) &&
-//     Array.isArray((obj as { values?: unknown }).values)
-//   );
-// }
-
 function normalizeRows(data: unknown[] = []) {
   return [...data].sort((a, b) =>
     JSON.stringify(a).localeCompare(JSON.stringify(b))
   );
 }
 
-export async function createChallengeDB() {
+export async function createChallengeDB(): Promise<DatabaseInstance> {
   let db = await createDatabase();
   db.run(schemaSQL);
   db.run(seedSQL);
+
+  type PossibleExecResult = {
+    columns?: unknown;
+    values?: unknown;
+    lc?: unknown;
+  };
 
   const execute = (query: string): QueryResult => {
     const validation = isQueryAllowed(query);
@@ -68,9 +60,6 @@ export async function createChallengeDB() {
 
     try {
       const results = db.exec(query);
-      console.log(results);
-
-      // Non-SELECT queries
       if (!results || results.length === 0) {
         return {
           success: true,
@@ -79,16 +68,21 @@ export async function createChallengeDB() {
         };
       }
 
-      const raw = results[0] as any;
-      console.log("This is the raw result", raw);
+      const raw = results[0] as PossibleExecResult;
 
-      // Normalize result shape (handles `columns` OR `lc`)
-      const columns: string[] = raw.columns ?? raw.lc ?? [];
-      const values: any[][] = raw.values ?? [];
+      const columns: string[] = Array.isArray(raw.columns)
+        ? (raw.columns as string[])
+        : Array.isArray(raw.lc)
+        ? (raw.lc as string[])
+        : [];
 
-      const data = values.map((row: any[]) =>
+      const values: unknown[][] = Array.isArray(raw.values)
+        ? (raw.values as unknown[][])
+        : [];
+
+      const data = values.map((row) =>
         Object.fromEntries(
-          columns.map((col: string, i: number) => [col, row[i]])
+          columns.map((col, i) => [col, row[i]])
         )
       );
 
@@ -108,24 +102,29 @@ export async function createChallengeDB() {
     }
   };
 
-  const reset = async () => {
+  const reset = async (): Promise<void> => {
     db.close();
 
     db = await createDatabase();
     db.run(schemaSQL);
     db.run(seedSQL);
+
+    instance.db = db; // keep external reference updated
   };
 
-  const dispose = () => {
+  const dispose = (): void => {
     db.close();
   };
 
-  return {
-    mode: 'challenge' as const,
+  const instance: DatabaseInstance = {
+    db,
+    mode: 'challenge',
     execute,
     reset,
     dispose,
   };
+
+  return instance;
 }
 
 export async function validateChallenge(
@@ -142,6 +141,7 @@ export async function validateChallenge(
 
   try {
     const userResult = userDb.execute(userQuery);
+    console.log("Result:", userResult);
 
     if (!userResult.success) {
       return {
