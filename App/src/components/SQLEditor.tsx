@@ -46,30 +46,6 @@ export function SQLEditor() {
 
   return (
     <div className="sql-editor">
-      {/* Header with mode toggle */}
-      <div className="editor-header">
-        <div className="mode-toggle">
-          <button
-            className={`mode-btn ${mode === 'practice' ? 'active' : ''}`}
-            onClick={() => handleModeChange('practice')}
-          >
-            Practice Mode
-          </button>
-          <button
-            className={`mode-btn ${mode === 'challenge' ? 'active' : ''}`}
-            onClick={() => handleModeChange('challenge')}
-          >
-            Challenge Mode
-          </button>
-        </div>
-
-        <div className="mode-badge">
-          <span className={`badge ${mode}`}>
-            {mode === 'practice' ? '🎯 Practice' : '🏆 Challenge'}
-          </span>
-        </div>
-      </div>
-
       {/* Warning banner for challenge mode */}
       {mode === 'challenge' && (
         <div className="warning-banner">

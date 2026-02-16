@@ -14,19 +14,14 @@ const FORBIDDEN_KEYWORDS = [
   'replace',
 ];
 
-/**
- * Check if query contains forbidden operations
- */
 function isQueryAllowed(query: string): { allowed: boolean; keyword?: string } {
   const lower = query.toLowerCase().trim();
 
-  // Remove SQL comments
   const withoutComments = lower
-    .replace(/--.*$/gm, '') // Single-line comments
-    .replace(/\/\*[\s\S]*?\*\//g, ''); // Multi-line comments
+    .replace(/--.*$/gm, '')
+    .replace(/\/\*[\s\S]*?\*\//g, '');
 
   for (const keyword of FORBIDDEN_KEYWORDS) {
-    // Check for keyword as a whole word (not part of another word)
     const regex = new RegExp(`\\b${keyword}\\b`, 'i');
     if (regex.test(withoutComments)) {
       return { allowed: false, keyword };
@@ -36,85 +31,118 @@ function isQueryAllowed(query: string): { allowed: boolean; keyword?: string } {
   return { allowed: true };
 }
 
-/**
- * Create fresh Challenge Mode database instance
- */
+type ExecResultShape = {
+  columns: string[];
+  values: unknown[][];
+};
+
+// function isExecResult(obj: unknown): obj is ExecResultShape {
+//   return (
+//     typeof obj === 'object' &&
+//     obj !== null &&
+//     Array.isArray((obj as { columns?: unknown }).columns) &&
+//     Array.isArray((obj as { values?: unknown }).values)
+//   );
+// }
+
+function normalizeRows(data: unknown[] = []) {
+  return [...data].sort((a, b) =>
+    JSON.stringify(a).localeCompare(JSON.stringify(b))
+  );
+}
+
 export async function createChallengeDB() {
-  const db = await createDatabase();
+  let db = await createDatabase();
   db.run(schemaSQL);
   db.run(seedSQL);
 
-  return {
-    db,
-    mode: 'challenge' as const,
+  const execute = (query: string): QueryResult => {
+    const validation = isQueryAllowed(query);
 
-    execute(query: string): QueryResult {
-      // Check for forbidden operations
-      const validation = isQueryAllowed(query);
-      if (!validation.allowed) {
-        return {
-          success: false,
-          message: `Schema modification is not allowed in Challenge Mode. (Found: ${validation.keyword?.toUpperCase()})`,
-        };
-      }
+    if (!validation.allowed) {
+      return {
+        success: false,
+        message: `Schema modification is not allowed in Challenge Mode. (Found: ${validation.keyword?.toUpperCase()})`,
+      };
+    }
 
-      try {
-        const results = db.exec(query);
+    try {
+      const results = db.exec(query);
+      console.log(results);
 
-        if (results.length === 0) {
-          return {
-            success: true,
-            message: 'Query executed successfully',
-            data: [],
-          };
-        }
-
+      // Non-SELECT queries
+      if (!results || results.length === 0) {
         return {
           success: true,
-          data: results[0].values.map((row) =>
-            Object.fromEntries(
-              results[0].columns.map((col, i) => [col, row[i]])
-            )
-          ),
-          columns: results[0].columns,
-        };
-      } catch (error: any) {
-        return {
-          success: false,
-          message: error.message || 'Query execution failed',
+          message: `Query executed successfully. Rows affected: ${db.getRowsModified()}`,
+          data: [],
         };
       }
-    },
 
-    reset(): void {
-      // In challenge mode, recreate the database
-      db.close();
-      createChallengeDB().then((newDb) => {
-        Object.assign(this, { db: newDb.db });
-      });
-      db.run(schemaSQL);
-      db.run(seedSQL);
-    },
+      const raw = results[0] as any;
+      console.log("This is the raw result", raw);
 
-    dispose(): void {
-      db.close();
-    },
+      // Normalize result shape (handles `columns` OR `lc`)
+      const columns: string[] = raw.columns ?? raw.lc ?? [];
+      const values: any[][] = raw.values ?? [];
+
+      const data = values.map((row: any[]) =>
+        Object.fromEntries(
+          columns.map((col: string, i: number) => [col, row[i]])
+        )
+      );
+
+      return {
+        success: true,
+        columns,
+        data,
+      };
+    } catch (error: unknown) {
+      return {
+        success: false,
+        message:
+          error instanceof Error
+            ? error.message
+            : String(error) || 'Query execution failed',
+      };
+    }
+  };
+
+  const reset = async () => {
+    db.close();
+
+    db = await createDatabase();
+    db.run(schemaSQL);
+    db.run(seedSQL);
+  };
+
+  const dispose = () => {
+    db.close();
+  };
+
+  return {
+    mode: 'challenge' as const,
+    execute,
+    reset,
+    dispose,
   };
 }
 
-/**
- * Validate user query against expected solution
- */
 export async function validateChallenge(
   userQuery: string,
   solutionQuery: string
-): Promise<{ passed: boolean; message: string; userResult?: any; expectedResult?: any }> {
-  // Create fresh DB for validation
-  const db = await createChallengeDB();
+): Promise<{
+  passed: boolean;
+  message: string;
+  userResult?: unknown;
+  expectedResult?: unknown;
+}> {
+  const userDb = await createChallengeDB();
+  const solutionDb = await createChallengeDB();
 
   try {
-    // Execute user query
-    const userResult = db.execute(userQuery);
+    const userResult = userDb.execute(userQuery);
+
     if (!userResult.success) {
       return {
         passed: false,
@@ -122,18 +150,19 @@ export async function validateChallenge(
       };
     }
 
-    // Execute solution query
-    const expectedResult = db.execute(solutionQuery);
+    const expectedResult = solutionDb.execute(solutionQuery);
+
     if (!expectedResult.success) {
       return {
         passed: false,
-        message: 'Internal error: Solution query failed',
+        message: 'Internal error: Solution query failed.',
       };
     }
 
-    // Compare results
-    const userJSON = JSON.stringify(userResult.data);
-    const expectedJSON = JSON.stringify(expectedResult.data);
+    const userJSON = JSON.stringify(normalizeRows(userResult.data ?? []));
+    const expectedJSON = JSON.stringify(
+      normalizeRows(expectedResult.data ?? [])
+    );
 
     if (userJSON === expectedJSON) {
       return {
@@ -142,15 +171,17 @@ export async function validateChallenge(
         userResult: userResult.data,
         expectedResult: expectedResult.data,
       };
-    } else {
-      return {
-        passed: false,
-        message: '❌ Incorrect. Your query result does not match the expected output.',
-        userResult: userResult.data,
-        expectedResult: expectedResult.data,
-      };
     }
+
+    return {
+      passed: false,
+      message:
+        '❌ Incorrect. Your query result does not match the expected output.',
+      userResult: userResult.data,
+      expectedResult: expectedResult.data,
+    };
   } finally {
-    db.dispose();
+    userDb.dispose();
+    solutionDb.dispose();
   }
 }

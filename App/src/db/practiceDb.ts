@@ -74,6 +74,7 @@ export async function createPracticeDB() {
           }
 
           const raw = results[0] as any;
+          console.log("This is the raw result", raw);
 
           // Normalize result shape (handles `columns` OR `lc`)
           const columns: string[] = raw.columns ?? raw.lc ?? [];
@@ -105,10 +106,13 @@ export async function createPracticeDB() {
           message: "Query executed successfully",
         };
 
-      } catch (error: any) {
+      } catch (error: unknown) {
         return {
           success: false,
-          message: error || "Query execution failed",
+          message:
+            error instanceof Error
+              ? error.message
+              : String(error) || 'Query execution failed',
         };
       }
     },
