@@ -2,7 +2,7 @@ import { createDatabase } from './sql';
 import type { Database } from "sql.js";
 import { schemaSQL } from './schema';
 import { seedSQL } from './seed';
-import type { QueryResult } from './types';
+import type { QueryResult, PossibleExecResult, DatabaseInstance } from './types';
 
 const STORAGE_KEY = 'practice_db';
 
@@ -49,64 +49,50 @@ async function loadDatabase(): Promise<Database> {
  * Create Practice Mode database instance
  */
 export async function createPracticeDB() {
-  const instanceDb = await loadDatabase();
+  let db = await loadDatabase();
 
-  return {
-    db: instanceDb,
-    mode: 'practice' as const,
-    execute(query: string): QueryResult {
-      try {
-        const trimmed = query.trim().toLowerCase();
+  const execute = (raw_query: string): QueryResult => {
+    try {
+      const query = raw_query.trim().toLowerCase();
 
-        // ---------------------------
-        // SELECT queries
-        // ---------------------------
-        if (trimmed.startsWith("select")) {
-          const results = this.db.exec(query);
-          console.log("Query executed successfully.");
+      const results = db.exec(query);
 
-          if (!results || results.length === 0) {
-            return {
-              success: true,
-              columns: [],
-              data: [],
-            };
-          }
-
-          const raw = results[0] as any;
-          console.log("This is the raw result", raw);
-
-          // Normalize result shape (handles `columns` OR `lc`)
-          const columns: string[] = raw.columns ?? raw.lc ?? [];
-          const values: any[][] = raw.values ?? [];
-
-          const data = values.map((row: any[]) =>
-            Object.fromEntries(
-              columns.map((col: string, i: number) => [col, row[i]])
-            )
-          );
-
-          return {
-            success: true,
-            columns,
-            data,
-          };
-        }
-
-        // ---------------------------
-        // Non-SELECT queries
-        // ---------------------------
-        this.db.run(query);
-
-        // Save only after write operations
-        saveDatabase(this.db);
-
+      if (!results || results.length === 0) {
         return {
           success: true,
-          message: "Query executed successfully",
+          columns: [],
+          data: [],
         };
+      }
 
-      } catch (error: unknown) {
+      const raw = results[0] as PossibleExecResult;
+      // Normalize result shape (handles `columns` OR `lc`)
+      const columns: string[] = Array.isArray(raw.columns)
+      ? (raw.columns as string[])
+        : Array.isArray(raw.lc)
+        ? (raw.lc as string[])
+        : [];
+
+      const values: unknown[][] = Array.isArray(raw.values)
+        ? (raw.values as unknown[][])
+        : [];
+
+      const data = values.map((row) =>
+        Object.fromEntries(
+          columns.map((col, i) => [col, row[i]])
+        )
+      );
+
+      if (!query.startsWith("select")) {
+        saveDatabase(db);
+      }
+
+      return {
+        success: true,
+        columns,
+        data,
+      };
+    } catch (error: unknown) {
         return {
           success: false,
           message:
@@ -114,21 +100,32 @@ export async function createPracticeDB() {
               ? error.message
               : String(error) || 'Query execution failed',
         };
-      }
-    },
+    }
+  }
 
-    async reset(): Promise<void> {
-      this.db.close();
-      localStorage.removeItem(STORAGE_KEY);
+  const reset = async (): Promise<void> => {
+    db.close();
 
-      this.db = await loadDatabase();
-      saveDatabase(this.db);
-    },
+    db = await createDatabase();
+    db.run(schemaSQL);
+    db.run(seedSQL);
 
-    dispose(): void {
-      this.db.close();
-    },
+    instance.db = db; // keep external reference updated
   };
+
+  const dispose = (): void => {
+    db.close();
+  };
+
+  const instance: DatabaseInstance = {
+    db,
+    mode: 'practice' as const,
+    execute,
+    reset,
+    dispose,
+  };
+
+  return instance;
 }
 
 /**

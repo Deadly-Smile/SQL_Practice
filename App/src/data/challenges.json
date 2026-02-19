@@ -1,0 +1,502 @@
+[
+  {
+    "id": 1,
+    "title": "Select All Customers",
+    "description": "Write a query to select all columns from the customers table.",
+    "expectedQuery": "SELECT * FROM customers;",
+    "hint": "Use SELECT * to get all columns",
+    "difficulty": "easy",
+    "category": "SELECT Basics",
+    "solved": false
+  },
+  {
+    "id": 2,
+    "title": "Customer Names and Emails",
+    "description": "Get full_name and email from all customers.",
+    "expectedQuery": "SELECT full_name, email FROM customers;",
+    "hint": "Specify columns explicitly",
+    "difficulty": "easy",
+    "category": "SELECT Basics",
+    "solved": false
+  },
+  {
+    "id": 3,
+    "title": "Customers from New York",
+    "description": "Find all customers from New York city.",
+    "expectedQuery": "SELECT * FROM customers WHERE city = 'New York';",
+    "hint": "Use WHERE clause",
+    "difficulty": "easy",
+    "category": "Filtering",
+    "solved": false
+  },
+  {
+    "id": 4,
+    "title": "Products Under $100",
+    "description": "Find all products with price less than 100.",
+    "expectedQuery": "SELECT * FROM products WHERE price < 100;",
+    "hint": "Use WHERE with < operator",
+    "difficulty": "easy",
+    "category": "Filtering",
+    "solved": false
+  },
+  {
+    "id": 5,
+    "title": "Most Expensive Products First",
+    "description": "List all products sorted by price from highest to lowest.",
+    "expectedQuery": "SELECT * FROM products ORDER BY price DESC;",
+    "hint": "Use ORDER BY with DESC",
+    "difficulty": "easy",
+    "category": "Sorting",
+    "solved": false
+  },
+  {
+    "id": 6,
+    "title": "First 5 Orders",
+    "description": "Get the first 5 orders from the orders table.",
+    "expectedQuery": "SELECT * FROM orders LIMIT 5;",
+    "hint": "Use LIMIT clause",
+    "difficulty": "easy",
+    "category": "Pagination",
+    "solved": false
+  },
+  {
+    "id": 7,
+    "title": "Count Total Customers",
+    "description": "Count the total number of customers.",
+    "expectedQuery": "SELECT COUNT(*) AS total_customers FROM customers;",
+    "hint": "Use COUNT(*)",
+    "difficulty": "easy",
+    "category": "Aggregation",
+    "solved": false
+  },
+  {
+    "id": 8,
+    "title": "Unique Product Categories",
+    "description": "List all unique product categories.",
+    "expectedQuery": "SELECT DISTINCT category FROM products;",
+    "hint": "Use DISTINCT keyword",
+    "difficulty": "easy",
+    "category": "Filtering",
+    "solved": false
+  },
+  {
+    "id": 9,
+    "title": "Customers with Gmail",
+    "description": "Find all customers whose email contains 'example.com'.",
+    "expectedQuery": "SELECT * FROM customers WHERE email LIKE '%example.com';",
+    "hint": "Use LIKE operator with %",
+    "difficulty": "easy",
+    "category": "Filtering",
+    "solved": false
+  },
+  {
+    "id": 10,
+    "title": "Completed Orders",
+    "description": "Find all orders with status 'completed'.",
+    "expectedQuery": "SELECT * FROM orders WHERE status = 'completed';",
+    "hint": "Filter by status column",
+    "difficulty": "easy",
+    "category": "Filtering",
+    "solved": false
+  },
+  {
+    "id": 11,
+    "title": "Average Product Price",
+    "description": "Calculate the average price of all products.",
+    "expectedQuery": "SELECT AVG(price) AS average_price FROM products;",
+    "hint": "Use AVG() function",
+    "difficulty": "easy",
+    "category": "Aggregation",
+    "solved": false
+  },
+  {
+    "id": 12,
+    "title": "Orders Per Customer",
+    "description": "Count how many orders each customer has placed.",
+    "expectedQuery": "SELECT customer_id, COUNT(*) AS total_orders FROM orders GROUP BY customer_id;",
+    "hint": "Use COUNT with GROUP BY",
+    "difficulty": "medium",
+    "category": "Aggregation",
+    "solved": false
+  },
+  {
+    "id": 13,
+    "title": "Total Revenue",
+    "description": "Calculate total revenue from all payments.",
+    "expectedQuery": "SELECT SUM(amount) AS total_revenue FROM payments;",
+    "hint": "Use SUM() on amount",
+    "difficulty": "medium",
+    "category": "Aggregation",
+    "solved": false
+  },
+  {
+    "id": 14,
+    "title": "Products by Category Count",
+    "description": "Count how many products exist in each category.",
+    "expectedQuery": "SELECT category, COUNT(*) AS product_count FROM products GROUP BY category;",
+    "hint": "GROUP BY category",
+    "difficulty": "medium",
+    "category": "Aggregation",
+    "solved": false
+  },
+  {
+    "id": 15,
+    "title": "Customer Order Details",
+    "description": "List customer names with their order IDs using a JOIN.",
+    "expectedQuery": "SELECT c.full_name, o.order_id FROM customers c JOIN orders o ON c.customer_id = o.customer_id;",
+    "hint": "JOIN customers and orders",
+    "difficulty": "medium",
+    "category": "Joins",
+    "solved": false
+  },
+  {
+    "id": 16,
+    "title": "Orders in January 2025",
+    "description": "Find all orders placed in January 2025.",
+    "expectedQuery": "SELECT * FROM orders WHERE strftime('%Y-%m', order_date) = '2025-01';",
+    "hint": "Use strftime to extract year-month",
+    "difficulty": "medium",
+    "category": "Date Functions",
+    "solved": false
+  },
+  {
+    "id": 17,
+    "title": "Most Expensive Product",
+    "description": "Find the product with the highest price.",
+    "expectedQuery": "SELECT * FROM products ORDER BY price DESC LIMIT 1;",
+    "hint": "Sort descending and limit to 1",
+    "difficulty": "medium",
+    "category": "Sorting",
+    "solved": false
+  },
+  {
+    "id": 18,
+    "title": "Customers Who Never Ordered",
+    "description": "Find customers who have not placed any orders.",
+    "expectedQuery": "SELECT * FROM customers WHERE customer_id NOT IN (SELECT customer_id FROM orders);",
+    "hint": "Use NOT IN with subquery",
+    "difficulty": "medium",
+    "category": "Subquery",
+    "solved": false
+  },
+  {
+    "id": 19,
+    "title": "Payment Methods Used",
+    "description": "Count how many payments were made with each payment method.",
+    "expectedQuery": "SELECT method, COUNT(*) AS payment_count FROM payments GROUP BY method;",
+    "hint": "GROUP BY method",
+    "difficulty": "medium",
+    "category": "Aggregation",
+    "solved": false
+  },
+  {
+    "id": 20,
+    "title": "Average Order Value",
+    "description": "Calculate the average payment amount per order.",
+    "expectedQuery": "SELECT AVG(amount) AS avg_order_value FROM payments;",
+    "hint": "Use AVG on amount",
+    "difficulty": "medium",
+    "category": "Aggregation",
+    "solved": false
+  },
+  {
+    "id": 21,
+    "title": "Total Items Per Order",
+    "description": "Calculate total quantity of items in each order.",
+    "expectedQuery": "SELECT order_id, SUM(quantity) AS total_items FROM order_items GROUP BY order_id;",
+    "hint": "SUM quantity grouped by order_id",
+    "difficulty": "medium",
+    "category": "Aggregation",
+    "solved": false
+  },
+  {
+    "id": 22,
+    "title": "Customers with Multiple Orders",
+    "description": "Find customers who have placed more than 2 orders.",
+    "expectedQuery": "SELECT customer_id, COUNT(*) AS order_count FROM orders GROUP BY customer_id HAVING COUNT(*) > 2;",
+    "hint": "Use HAVING after GROUP BY",
+    "difficulty": "medium",
+    "category": "Aggregation",
+    "solved": false
+  },
+  {
+    "id": 23,
+    "title": "Product Revenue",
+    "description": "Calculate total revenue for each product (quantity × price).",
+    "expectedQuery": "SELECT p.product_name, SUM(oi.quantity * p.price) AS total_revenue FROM order_items oi JOIN products p ON oi.product_id = p.product_id GROUP BY p.product_name;",
+    "hint": "JOIN products with order_items",
+    "difficulty": "hard",
+    "category": "Joins + Aggregation",
+    "solved": false
+  },
+  {
+    "id": 24,
+    "title": "Top 3 Customers by Spending",
+    "description": "Find the top 3 customers who spent the most money.",
+    "expectedQuery": "SELECT c.full_name, SUM(p.amount) AS total_spent FROM customers c JOIN orders o ON c.customer_id = o.customer_id JOIN payments p ON o.order_id = p.order_id GROUP BY c.customer_id ORDER BY total_spent DESC LIMIT 3;",
+    "hint": "Join customers, orders, payments",
+    "difficulty": "hard",
+    "category": "Joins + Aggregation",
+    "solved": false
+  },
+  {
+    "id": 25,
+    "title": "Orders Without Payment",
+    "description": "Find orders that don't have a corresponding payment.",
+    "expectedQuery": "SELECT * FROM orders WHERE order_id NOT IN (SELECT order_id FROM payments);",
+    "hint": "Use NOT IN with payments",
+    "difficulty": "medium",
+    "category": "Subquery",
+    "solved": false
+  },
+  {
+    "id": 26,
+    "title": "Best Selling Product",
+    "description": "Find the product with the highest total quantity sold.",
+    "expectedQuery": "SELECT p.product_name, SUM(oi.quantity) AS total_sold FROM order_items oi JOIN products p ON oi.product_id = p.product_id GROUP BY p.product_id ORDER BY total_sold DESC LIMIT 1;",
+    "hint": "SUM quantity, then order",
+    "difficulty": "hard",
+    "category": "Joins + Aggregation",
+    "solved": false
+  },
+  {
+    "id": 27,
+    "title": "Revenue by Category",
+    "description": "Calculate total revenue for each product category.",
+    "expectedQuery": "SELECT p.category, SUM(oi.quantity * p.price) AS category_revenue FROM order_items oi JOIN products p ON oi.product_id = p.product_id GROUP BY p.category;",
+    "hint": "Group by category",
+    "difficulty": "hard",
+    "category": "Joins + Aggregation",
+    "solved": false
+  },
+  {
+    "id": 28,
+    "title": "Customers and Their Cities",
+    "description": "List all customers with orders, showing their city using LEFT JOIN.",
+    "expectedQuery": "SELECT c.full_name, c.city, o.order_id FROM customers c LEFT JOIN orders o ON c.customer_id = o.customer_id;",
+    "hint": "Use LEFT JOIN to include all customers",
+    "difficulty": "medium",
+    "category": "Joins",
+    "solved": false
+  },
+  {
+    "id": 29,
+    "title": "Second Most Expensive Product",
+    "description": "Find the product with the second highest price.",
+    "expectedQuery": "SELECT * FROM products WHERE price = (SELECT MAX(price) FROM products WHERE price < (SELECT MAX(price) FROM products));",
+    "hint": "Use nested MAX queries",
+    "difficulty": "hard",
+    "category": "Subquery",
+    "solved": false
+  },
+  {
+    "id": 30,
+    "title": "Orders Per Month",
+    "description": "Count how many orders were placed each month.",
+    "expectedQuery": "SELECT strftime('%Y-%m', order_date) AS month, COUNT(*) AS order_count FROM orders GROUP BY month;",
+    "hint": "Extract year-month and group",
+    "difficulty": "medium",
+    "category": "Date Functions",
+    "solved": false
+  },
+  {
+    "id": 31,
+    "title": "Average Items Per Order",
+    "description": "Calculate the average number of items across all orders.",
+    "expectedQuery": "SELECT AVG(total_items) AS avg_items FROM (SELECT order_id, SUM(quantity) AS total_items FROM order_items GROUP BY order_id);",
+    "hint": "Use subquery with AVG",
+    "difficulty": "hard",
+    "category": "Subquery + Aggregation",
+    "solved": false
+  },
+  {
+    "id": 32,
+    "title": "Products Never Ordered",
+    "description": "Find products that have never been ordered.",
+    "expectedQuery": "SELECT * FROM products WHERE product_id NOT IN (SELECT DISTINCT product_id FROM order_items);",
+    "hint": "Use NOT IN with order_items",
+    "difficulty": "medium",
+    "category": "Subquery",
+    "solved": false
+  },
+  {
+    "id": 33,
+    "title": "Customer Lifetime Value",
+    "description": "Calculate total amount spent by each customer across all their orders.",
+    "expectedQuery": "SELECT c.full_name, SUM(p.amount) AS lifetime_value FROM customers c JOIN orders o ON c.customer_id = o.customer_id JOIN payments p ON o.order_id = p.order_id GROUP BY c.customer_id;",
+    "hint": "Join customers, orders, and payments",
+    "difficulty": "hard",
+    "category": "Joins + Aggregation",
+    "solved": false
+  },
+  {
+    "id": 34,
+    "title": "Cancelled Orders",
+    "description": "Find all orders with status 'cancelled' and their customer names.",
+    "expectedQuery": "SELECT c.full_name, o.order_id, o.order_date FROM customers c JOIN orders o ON c.customer_id = o.customer_id WHERE o.status = 'cancelled';",
+    "hint": "Join and filter by status",
+    "difficulty": "medium",
+    "category": "Joins + Filtering",
+    "solved": false
+  },
+  {
+    "id": 35,
+    "title": "Payment Method Revenue",
+    "description": "Calculate total revenue collected through each payment method.",
+    "expectedQuery": "SELECT method, SUM(amount) AS method_revenue FROM payments GROUP BY method;",
+    "hint": "SUM amount by method",
+    "difficulty": "medium",
+    "category": "Aggregation",
+    "solved": false
+  },
+  {
+    "id": 36,
+    "title": "Most Recent Order Per Customer",
+    "description": "Find the most recent order date for each customer.",
+    "expectedQuery": "SELECT customer_id, MAX(order_date) AS latest_order FROM orders GROUP BY customer_id;",
+    "hint": "Use MAX on order_date",
+    "difficulty": "medium",
+    "category": "Aggregation",
+    "solved": false
+  },
+  {
+    "id": 37,
+    "title": "Products Above Average Price",
+    "description": "Find all products priced above the average product price.",
+    "expectedQuery": "SELECT * FROM products WHERE price > (SELECT AVG(price) FROM products);",
+    "hint": "Compare with AVG subquery",
+    "difficulty": "medium",
+    "category": "Subquery",
+    "solved": false
+  },
+  {
+    "id": 38,
+    "title": "Order Details with Product Info",
+    "description": "List all order items with product name and price.",
+    "expectedQuery": "SELECT oi.order_id, p.product_name, p.price, oi.quantity FROM order_items oi JOIN products p ON oi.product_id = p.product_id;",
+    "hint": "JOIN order_items with products",
+    "difficulty": "medium",
+    "category": "Joins",
+    "solved": false
+  },
+  {
+    "id": 39,
+    "title": "Revenue by City",
+    "description": "Calculate total revenue from customers in each city.",
+    "expectedQuery": "SELECT c.city, SUM(p.amount) AS city_revenue FROM customers c JOIN orders o ON c.customer_id = o.customer_id JOIN payments p ON o.order_id = p.order_id GROUP BY c.city;",
+    "hint": "Join and group by city",
+    "difficulty": "hard",
+    "category": "Joins + Aggregation",
+    "solved": false
+  },
+  {
+    "id": 40,
+    "title": "Pending Orders Value",
+    "description": "Calculate the total value of all pending orders by joining with order items.",
+    "expectedQuery": "SELECT SUM(oi.quantity * p.price) AS pending_value FROM orders o JOIN order_items oi ON o.order_id = oi.order_id JOIN products p ON oi.product_id = p.product_id WHERE o.status = 'pending';",
+    "hint": "Filter pending and calculate value",
+    "difficulty": "hard",
+    "category": "Joins + Filtering",
+    "solved": false
+  },
+  {
+    "id": 41,
+    "title": "Customer Order Frequency",
+    "description": "Find customers and count their total orders, ordered by frequency.",
+    "expectedQuery": "SELECT c.full_name, COUNT(o.order_id) AS order_count FROM customers c LEFT JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_id ORDER BY order_count DESC;",
+    "hint": "Use LEFT JOIN to include all customers",
+    "difficulty": "hard",
+    "category": "Joins + Aggregation",
+    "solved": false
+  },
+  {
+    "id": 42,
+    "title": "Monthly Revenue Trend",
+    "description": "Calculate total revenue for each month.",
+    "expectedQuery": "SELECT strftime('%Y-%m', payment_date) AS month, SUM(amount) AS monthly_revenue FROM payments GROUP BY month ORDER BY month;",
+    "hint": "Group payments by month",
+    "difficulty": "medium",
+    "category": "Date Functions + Aggregation",
+    "solved": false
+  },
+  {
+    "id": 43,
+    "title": "Low Stock Alert",
+    "description": "This challenge cannot be completed as the products table doesn't have a stock column. Try another challenge!",
+    "expectedQuery": "SELECT 'Schema does not support this query' AS note;",
+    "hint": "N/A - Schema limitation",
+    "difficulty": "easy",
+    "category": "Schema Limitation",
+    "solved": false
+  },
+  {
+    "id": 44,
+    "title": "Customer Order Summary",
+    "description": "Create a summary showing customer name, total orders, and total spent.",
+    "expectedQuery": "SELECT c.full_name, COUNT(DISTINCT o.order_id) AS total_orders, COALESCE(SUM(p.amount), 0) AS total_spent FROM customers c LEFT JOIN orders o ON c.customer_id = o.customer_id LEFT JOIN payments p ON o.order_id = p.order_id GROUP BY c.customer_id;",
+    "hint": "Use LEFT JOIN and COALESCE",
+    "difficulty": "hard",
+    "category": "Joins + Aggregation",
+    "solved": false
+  },
+  {
+    "id": 45,
+    "title": "Top Product by Revenue",
+    "description": "Find which product generated the most revenue overall.",
+    "expectedQuery": "SELECT p.product_name, SUM(oi.quantity * p.price) AS total_revenue FROM order_items oi JOIN products p ON oi.product_id = p.product_id GROUP BY p.product_id ORDER BY total_revenue DESC LIMIT 1;",
+    "hint": "Calculate revenue per product",
+    "difficulty": "hard",
+    "category": "Joins + Aggregation",
+    "solved": false
+  },
+  {
+    "id": 46,
+    "title": "Orders with Multiple Items",
+    "description": "Find orders that contain more than one type of product.",
+    "expectedQuery": "SELECT order_id, COUNT(DISTINCT product_id) AS product_types FROM order_items GROUP BY order_id HAVING COUNT(DISTINCT product_id) > 1;",
+    "hint": "Count distinct products per order",
+    "difficulty": "medium",
+    "category": "Aggregation",
+    "solved": false
+  },
+  {
+    "id": 47,
+    "title": "Payment Conversion Rate",
+    "description": "Calculate what percentage of orders have been paid.",
+    "expectedQuery": "SELECT ROUND((CAST(COUNT(DISTINCT p.order_id) AS REAL) / COUNT(DISTINCT o.order_id)) * 100, 2) AS payment_rate FROM orders o LEFT JOIN payments p ON o.order_id = p.order_id;",
+    "hint": "Divide paid orders by total orders",
+    "difficulty": "hard",
+    "category": "Aggregation + Math",
+    "solved": false
+  },
+  {
+    "id": 48,
+    "title": "Customer Cohort by Month",
+    "description": "Group customers by the month they were created.",
+    "expectedQuery": "SELECT strftime('%Y-%m', created_at) AS cohort_month, COUNT(*) AS customer_count FROM customers GROUP BY cohort_month;",
+    "hint": "Extract month from created_at",
+    "difficulty": "medium",
+    "category": "Date Functions + Aggregation",
+    "solved": false
+  },
+  {
+    "id": 49,
+    "title": "Average Order Processing Time",
+    "description": "Calculate average days between order date and payment date.",
+    "expectedQuery": "SELECT AVG(julianday(p.payment_date) - julianday(o.order_date)) AS avg_processing_days FROM orders o JOIN payments p ON o.order_id = p.order_id;",
+    "hint": "Use julianday to calculate difference",
+    "difficulty": "hard",
+    "category": "Date Functions",
+    "solved": false
+  },
+  {
+    "id": 50,
+    "title": "Complete Customer Profile",
+    "description": "Create a complete profile: customer info, order count, total spent, and latest order.",
+    "expectedQuery": "SELECT c.full_name, c.email, c.city, COUNT(DISTINCT o.order_id) AS orders, COALESCE(SUM(p.amount), 0) AS spent, MAX(o.order_date) AS last_order FROM customers c LEFT JOIN orders o ON c.customer_id = o.customer_id LEFT JOIN payments p ON o.order_id = p.order_id GROUP BY c.customer_id;",
+    "hint": "Use multiple aggregations",
+    "difficulty": "hard",
+    "category": "Joins + Aggregation",
+    "solved": false
+  }
+]

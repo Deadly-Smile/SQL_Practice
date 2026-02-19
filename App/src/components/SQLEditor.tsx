@@ -14,13 +14,6 @@ export function SQLEditor() {
     setResult(queryResult);
   };
 
-  // const handleModeChange = (newMode: DatabaseMode) => {
-  //   if (window.confirm(`Switch to ${newMode} mode? This will create a new database instance.`)) {
-  //     changeMode(newMode);
-  //     setResult(null);
-  //   }
-  // };
-
   const handleReset = async () => {
     if (window.confirm('Reset database to default schema? This will delete all your changes.')) {
       await resetDatabase();

@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { SQLEditor } from './components/SQLEditor';
 import { ChallengeMode } from './components/ChallengeMode';
 import './App.css';
+import { PracticeMode } from './components/PracticeMode';
 
 type View = 'editor' | 'challenge';
 
@@ -31,7 +31,9 @@ function App() {
       </nav>
 
       <main className="app-main">
-        {currentView === 'editor' && <SQLEditor />}
+        {currentView === 'editor' && (
+          <PracticeMode />
+        )}
         {currentView === 'challenge' && <ChallengeMode />}
       </main>
 

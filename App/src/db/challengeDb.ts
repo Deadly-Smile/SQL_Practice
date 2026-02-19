@@ -1,7 +1,7 @@
 import { createDatabase } from './sql';
 import { schemaSQL } from './schema';
 import { seedSQL } from './seed';
-import type { QueryResult, DatabaseInstance } from './types';
+import type { QueryResult, DatabaseInstance, PossibleExecResult } from './types';
 
 const FORBIDDEN_KEYWORDS = [
   'drop',
@@ -41,12 +41,6 @@ export async function createChallengeDB(): Promise<DatabaseInstance> {
   let db = await createDatabase();
   db.run(schemaSQL);
   db.run(seedSQL);
-
-  type PossibleExecResult = {
-    columns?: unknown;
-    values?: unknown;
-    lc?: unknown;
-  };
 
   const execute = (query: string): QueryResult => {
     const validation = isQueryAllowed(query);
