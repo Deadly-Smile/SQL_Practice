@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import type { DatabaseInstance, TableSchema } from '../../db';
 import { getTableNames, getCompleteTableInfo } from '../../db';
 import { TableModal } from '../TableModal';
+import { ERDiagram } from '../Erdiagram';
 import './DatabaseExplorer.css';
 
 interface DatabaseExplorerProps {
@@ -12,6 +13,7 @@ export function DatabaseExplorer({ db }: DatabaseExplorerProps) {
   const [tables, setTables] = useState<string[]>([]);
   const [selectedTable, setSelectedTable] = useState<TableSchema | null>(null);
   const [isExpanded, setIsExpanded] = useState(true);
+  const [showERDiagram, setShowERDiagram] = useState(false);
 
   useEffect(() => {
     if (db) {
@@ -23,7 +25,6 @@ export function DatabaseExplorer({ db }: DatabaseExplorerProps) {
   const handleTableClick = (tableName: string) => {
     if (db) {
       const tableInfo = getCompleteTableInfo(db, tableName);
-      console.log("This is the table data:", tableInfo);
       setSelectedTable(tableInfo);
     }
   };
@@ -53,13 +54,22 @@ export function DatabaseExplorer({ db }: DatabaseExplorerProps) {
           </div>
           <div className="explorer-actions">
             {isExpanded && (
-              <button
-                className="icon-btn"
-                onClick={handleRefresh}
-                title="Refresh tables"
-              >
-                🔄
-              </button>
+              <>
+                <button
+                  className="icon-btn"
+                  onClick={() => setShowERDiagram(true)}
+                  title="Show ER Diagram"
+                >
+                  📊
+                </button>
+                <button
+                  className="icon-btn"
+                  onClick={handleRefresh}
+                  title="Refresh tables"
+                >
+                  🔄
+                </button>
+              </>
             )}
             <button
               className="icon-btn"
@@ -98,6 +108,10 @@ export function DatabaseExplorer({ db }: DatabaseExplorerProps) {
 
       {selectedTable && (
         <TableModal tableInfo={selectedTable} onClose={handleCloseModal} />
+      )}
+
+      {showERDiagram && (
+        <ERDiagram db={db} onClose={() => setShowERDiagram(false)} />
       )}
     </>
   );
